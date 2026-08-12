@@ -17,6 +17,7 @@ limitations under the License.
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/Project-HAMi/HAMi/pkg/monitor/nvidia"
@@ -158,5 +159,16 @@ func TestCheckBlocking_MultiDevice(t *testing.T) {
 				t.Errorf("CheckPriority: want %v, got %v", test.want, got)
 			}
 		})
+	}
+}
+
+func TestWatchAndFeedback_NilNVML(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel() // Immediately cancel context so watchAndFeedback exits gracefully after initialization check
+
+	lockCh := make(chan bool)
+	err := watchAndFeedback(ctx, &nvidia.ContainerLister{}, nil, lockCh)
+	if err != nil {
+		t.Errorf("watchAndFeedback with nil nvmllib returned unexpected error: %v", err)
 	}
 }

@@ -4,7 +4,7 @@ run:
   modules-download-mode: readonly
 output:
   formats:
-    text:
+    - format: colored-line-number
       path: stdout
       print-linter-name: true
       print-issued-lines: true
@@ -16,7 +16,6 @@ linters:
     - forcetypeassert
     - godot
     - misspell
-    - modernize
     - staticcheck
   settings:
     dupl:
@@ -69,7 +68,8 @@ linters:
       - third_party$
       - builtin$
       - examples$
-      - pkg/device-plugin 
+      - pkg/device-plugin
+      - cmd/vGPUmonitor
 issues:
   uniq-by-line: true
 formatters:

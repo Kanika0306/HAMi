@@ -68,3 +68,18 @@ func TestDescribeCollectSync(t *testing.T) {
 		t.Errorf("Gather failed (legacy): %v", err)
 	}
 }
+
+func TestCollectGPUInfo_NilNVML(t *testing.T) {
+	c := &ClusterManager{
+		Zone:            "test-zone",
+		nvmllib:         nil,
+		containerLister: &nvidia.ContainerLister{},
+	}
+	cc := ClusterManagerCollector{ClusterManager: c}
+	ch := make(chan prometheus.Metric, 10)
+
+	// Under nil nvmllib, physical GPU metrics collection must gracefully skip without panicking.
+	if err := cc.collectGPUInfo(ch); err != nil {
+		t.Errorf("collectGPUInfo with nil nvmllib returned unexpected error: %v", err)
+	}
+}
